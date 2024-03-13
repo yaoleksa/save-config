@@ -8,14 +8,32 @@ const client = createClient('https://azxmmelolclqfcfjgpka.supabase.co',
 function saveConfig() {
     try {
         const conf = JSON.parse(document.getElementById('new_config').value);
-        client.from('jsonbase').upsert({
-            name: 'config',
-            data: conf
-        }).then(response => {
-            console.log(response);
-        }).catch(error => {
-            console.log(error.message);
+        client.auth.signInWithPassword({
+            email: 'ekt_1@ukr.net',
+            password: 'notveryeasy4473'
+        }).then(databaseResponse => {
+            client.auth.setSession({
+                access_token: databaseResponse.data.session.access_token,
+                refresh_token: databaseResponse.data.session.refresh_token
+            }).then(status => {
+                if(status.data.user.aud === 'authenticated') {
+                    client.from('jsonbase').update({
+                        name: 'config',
+                        data: conf
+                    }).eq('name', 'config').then(response => {
+                        console.log(response);
+                    })
+                } else {
+                    alert('Failed to upsert new configuration!');
+                }
+            })
         });
+        // client.from('jsonbase').upsert({
+        //     name: 'config',
+        //     data: conf
+        // }).then(response => {
+        //     console.log(response);
+        // });
     } catch(error) {
         alert('Invalid JSON input');
     }
