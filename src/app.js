@@ -55,7 +55,6 @@ function saveConfig() {
             title: 'Error',
             content: 'Invalid JSON input'
         }).show();
-        alert('Invalid JSON input');
     }
 }
 
