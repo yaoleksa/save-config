@@ -32,7 +32,7 @@ function saveConfig() {
                         setTimeout(() => { 
                             window.open(window.location.href.match(/^(.*)save-config/)[0] + 
                             '/index.html', '_self');
-                        }, 30000);
+                        }, 3000);
                     }).catch(error => {
                         new Popup({
                             id: 'save-error-message',
