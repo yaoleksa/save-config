@@ -7,7 +7,9 @@ const client = createClient('https://azxmmelolclqfcfjgpka.supabase.co',
 
 function saveConfig() {
     try {
-        const conf = JSON.parse(document.getElementById('new_config').value);
+        const userMessage = document.getElementById('new_config');
+        const conf = JSON.parse(userMessage.value);
+        userMessage.value = null;
         client.auth.signInWithPassword({
             email: 'ekt_1@ukr.net',
             password: 'notveryeasy4473'
@@ -22,19 +24,37 @@ function saveConfig() {
                         data: conf
                     }).eq('name', 'config').then(response => {
                         console.log(response);
-                    })
+                        new Popup({
+                            id: 'success-message',
+                            title: 'Success',
+                            content: 'Your data was successfuly saved'
+                        }).show();
+                        setTimeout(() => { 
+                            window.open(window.location.href.match(/^(.*)save-config/)[0] + 
+                            '/index.html', '_self');
+                        }, 30000);
+                    }).catch(error => {
+                        new Popup({
+                            id: 'save-error-message',
+                            title: 'Error',
+                            content: `Unable to save JSON: ${error.message}`
+                        }).show();
+                    });
                 } else {
-                    alert('Failed to upsert new configuration!');
+                    new Popup({
+                        id: 'upsert-error-message',
+                        title: 'Error',
+                        content: 'Failed to upsert new configuration!'
+                    }).show();
                 }
             })
         });
-        // client.from('jsonbase').upsert({
-        //     name: 'config',
-        //     data: conf
-        // }).then(response => {
-        //     console.log(response);
-        // });
     } catch(error) {
+        new Popup({
+            id: 'input-error-message',
+            title: 'Error',
+            content: 'Invalid JSON input'
+        }).show();
         alert('Invalid JSON input');
     }
 }
